@@ -13,4 +13,4 @@ Historial de cambios del proyecto — Prueba Técnica Ingeniero de Datos (FinBan
 - Se desarrolló y validó `generate_data.py`: script de generación de datos sintéticos con semilla fija (42), cubriendo 3 de las 6 tablas fuente (`TB_CLIENTES_CORE`, `TB_PRODUCTOS_CAT`, `TB_MOV_FINANCIEROS`), con integridad referencial verificada, ~5% de nulos controlados, y 2 anomalías intencionales (duplicados, fecha fuera de rango)
 - Se redactó la primera versión del README.md con la justificación de sector, plataforma y alcance
 
-<!-- Próximas entradas se agregan aquí, una por cada día de trabajo -->
+
