@@ -72,7 +72,6 @@ def audit_columns(df, source_system="TRANSACCIONAL_FINBANK"):
  
 def generar_clientes(n=N_CLIENTES):
     ids = np.arange(1, n + 1)
-    # Edades con distribución normal, entre 18 y 85 años
     edades = np.clip(np.random.normal(loc=38, scale=12, size=n), 18, 85).astype(int)
     hoy = datetime(2026, 9, 10)
     fec_nac = [hoy - timedelta(days=int(e * 365.25) + random.randint(0, 364)) for e in edades]
@@ -95,8 +94,7 @@ def generar_clientes(n=N_CLIENTES):
         "estado_cli": np.random.choice(["Activo", "Inactivo"], size=n, p=[0.92, 0.08]),
         "canal_adquis": np.random.choice(CANALES_ADQUIS, size=n),
     })
- 
-    # Nulos controlados en campos no críticos
+
     df["canal_adquis"] = add_nulls(df["canal_adquis"])
     df["score_buro"] = add_nulls(df["score_buro"].astype("float"))
  
@@ -123,17 +121,11 @@ def generar_movimientos(n=N_MOVIMIENTOS, n_clientes=N_CLIENTES, n_productos=N_PR
     ids = np.arange(1, n + 1)
     id_cli = np.random.randint(1, n_clientes + 1, size=n)
     cod_prod = np.random.randint(1, n_productos + 1, size=n)
- 
-    # Fechas cubriendo 12 meses de histórico
     fecha_base = datetime(2026, 9, 10)
     dias_atras = np.random.randint(0, 365, size=n)
     fec_mov = [(fecha_base - timedelta(days=int(d))) for d in dias_atras]
- 
-    # Horarios concentrados en horario laboral (distribución no uniforme, realista)
     horas = np.clip(np.random.normal(loc=13, scale=4, size=n), 0, 23).astype(int)
     hra_mov = [f"{h:02d}:{random.randint(0,59):02d}:{random.randint(0,59):02d}" for h in horas]
- 
-    # Montos con distribución log-normal (típico de comportamiento financiero real)
     vr_mov = np.round(np.random.lognormal(mean=11, sigma=1.2, size=n), -2)
     vr_mov = np.clip(vr_mov, 5000, 15000000)
  
@@ -151,17 +143,13 @@ def generar_movimientos(n=N_MOVIMIENTOS, n_clientes=N_CLIENTES, n_productos=N_PR
         "cod_estado_mov": np.random.choice(["Exitoso", "Fallido", "Pendiente"], size=n, p=[0.92, 0.05, 0.03]),
         "id_dispositivo": [str(uuid.uuid4()) for _ in range(n)],
     })
- 
-    # Nulos controlados
+
     df["cod_canal"] = add_nulls(df["cod_canal"])
- 
-    # Anomalías intencionales documentadas
-    # Duplicados exactos (simula error de reintento de transacción)
+
     n_dupes = max(1, int(n * 0.001))
     dupes = df.sample(n_dupes, random_state=SEED)
     df = pd.concat([df, dupes], ignore_index=True)
- 
-    # Registro con fecha fuera de rango (simula error de sistema fuente)
+
     if len(df) > 0:
         idx = df.sample(1, random_state=SEED).index[0]
         df.loc[idx, "fec_mov"] = "2099-01-01"
