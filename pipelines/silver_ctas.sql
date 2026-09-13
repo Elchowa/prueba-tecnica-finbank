@@ -60,7 +60,7 @@ SELECT
         WHEN CAST(m.fec_mov AS DATE) > DATE '2026-09-10' THEN 'fecha de movimiento fuera de rango (futuro)'
         ELSE 'otro'
     END AS motivo_error,
-    CURRENT_TIMESTAMP AS fecha_deteccion
+    CAST(CURRENT_TIMESTAMP AS VARCHAR) AS fecha_deteccion
 FROM finbank_bronze.tb_mov_financieros m
 LEFT JOIN finbank_silver.tb_clientes_core c ON CAST(m.id_cli AS INTEGER) = c.id_cli
 LEFT JOIN finbank_silver.tb_productos_cat p ON CAST(m.cod_prod AS INTEGER) = p.cod_prod
